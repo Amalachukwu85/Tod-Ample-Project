@@ -1,0 +1,90 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description:  Val Ample Testing
+
+Resources:
+ AmpleVPC:
+    Type: AWS::EC2::VPC
+    Properties:
+      CidrBlock: "192.168.0.0/16"
+      EnableDnsHostnames: false
+      EnableDnsSupport: false
+      Tags: 
+        - Key:  "Name"
+          Value:  "AmpleVPC"
+
+ privatesubnet1:
+    Type: AWS::EC2::Subnet
+    Properties:
+      AvailabilityZone: "us-east-1a"
+      CidrBlock: "192.168.1.0/24"
+      Tags: 
+        - Key:  "Name"
+          Value:  "privatesubnet1"
+      VpcId:
+        Ref:  "AmpleVPC"
+
+ privatesubnet2:
+    Type: AWS::EC2::Subnet
+    Properties:
+      AvailabilityZone: "us-east-1b"
+      CidrBlock: "192.168.2.0/24"
+      Tags: 
+        - Key:  "Name"
+          Value:  "privatesubnet2"
+      VpcId:
+        Ref:  "AmpleVPC"
+
+ DBsubnetGroup:
+    Type: AWS::RDS::DBSubnetGroup
+    Properties:
+      DBSubnetGroupDescription: "This is Val DB" # Required
+      SubnetIds: # Required
+        - !Ref  "privatesubnet1"
+        - !Ref  "privatesubnet2"
+      Tags: 
+        - Key:  "Name"
+          Value:  "DBsubnetGroup"
+
+ RDsecutiryGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: "Allow RDS" # Required
+      SecurityGroupEgress: 
+      - IpProtocol: tcp
+        FromPort: 80
+        ToPort: 80
+        CidrIp: 0.0.0.0/0
+      SecurityGroupIngress: 
+      - IpProtocol: tcp
+        FromPort: 3306
+        ToPort: 3306
+        CidrIp: 0.0.0.0/0
+      Tags: 
+        - Key:  "Name"
+          Value:  "RDsecutiryGroup"
+      VpcId:
+        Ref:  "AmpleVPC"
+
+ RDSinstance:
+    Type: AWS::RDS::DBInstance
+    Properties:
+      AllocatedStorage: "20"
+      AllowMajorVersionUpgrade: false
+      AutoMinorVersionUpgrade: false
+      BackupRetentionPeriod: 7
+      DBInstanceClass: "db.t2.micro"
+      DBInstanceIdentifier: "RDSdemoinstance"
+      DBName: "AmpleDB"
+      DBSubnetGroupName:
+        Ref:  "DBsubnetGroup"
+      Engine: "MySQL"
+      EngineVersion: "8.0.33"
+      MasterUserPassword: "Aws123456789"
+      MasterUsername: "awsuser"
+      Port: "3306"
+      PubliclyAccessible: false
+      Tags: 
+        - Key:  "Name"
+          Value:  "RDSinstance"
+      VPCSecurityGroups: 
+        - Ref:  "RDsecutiryGroup"
