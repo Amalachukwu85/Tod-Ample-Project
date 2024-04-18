@@ -1,0 +1,48 @@
+
+  todrds:
+    Type: AWS::RDS::DBInstance
+    Properties:
+      AllocatedStorage: "20"
+      AllowMajorVersionUpgrade: false
+      BackupRetentionPeriod: 7
+      DBInstanceClass: "db.t2.micro"
+      DBInstanceIdentifier: "rdsDemoinstance"
+      DBName: "Ampledb"
+      DBSubnetGroupName:
+        Ref:  "todsubgroup"
+      Port: "3306"
+      Engine: "MySQL"
+      EngineVersion: "8.0.33"
+      MasterUserPassword: "Aws123456789"
+      MasterUsername: "awsuser"
+      PubliclyAccessible: false
+      Tags: 
+        - key:  "Name"
+          value:  "rdsDemoinstance"
+      VPCSecurityGroups: 
+        - Ref:  "todsecuritygroup"
+
+          DBSubnetGroupName:
+        Ref:  "todsubgroup"
+
+        todrds:
+    Type: AWS::RDS::DBInstance
+    Properties:
+      AllocatedStorage: "20"
+      AllowMajorVersionUpgrade: false
+      BackupRetentionPeriod: 7
+      DBInstanceClass: "db.t3.micro"
+      DBInstanceIdentifier: "rdsDemoinstance"
+      DBName: "Ampledb"
+      Port: "3306"
+      Engine: "mysql"
+      EngineVersion: "8.0.33"
+      MasterUserPassword: "Aws123456789"
+      MasterUsername: "awsuser"
+      PubliclyAccessible: false
+      Tags: 
+        - Key:  "Name"
+          Value:  "rdsDemoinstance"
+      VPCSecurityGroups: 
+        - Ref:  "todvpc"
+
